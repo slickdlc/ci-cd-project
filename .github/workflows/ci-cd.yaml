@@ -3,25 +3,29 @@ name: CI-CD-OKE
 on:
   push:
     branches:
-      - main
+      - master
 
 env:
-  REGION: sa-santiago-1
+  REGION: scl
   NAMESPACE: axdkgb7ur2sa
   REPO_NAME: tesis-app
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    environment: dev
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
 
     - name: Login to OCIR
+      env:
+        OCIR_PASSWORD: ${{ secrets.OCIR_PASSWORD }}
+        OCIR_USERNAME: ${{ secrets.OCIR_USERNAME }}
       run: |
-        echo "${{ secrets.OCIR_PASSWORD }}" | docker login $REGION.ocir.io \
-        -u "${{ secrets.OCIR_USERNAME }}" --password-stdin
+        echo "$OCIR_PASSWORD" | docker login $REGION.ocir.io \
+        -u "$OCIR_USERNAME" --password-stdin
 
     - name: Build Docker image
       run: |
@@ -35,8 +39,10 @@ jobs:
       uses: azure/setup-kubectl@v3
 
     - name: Configure kubeconfig
+      env:
+        KUBECONFIG_DATA: ${{ secrets.KUBECONFIG_DATA }}
       run: |
-        echo "${{ secrets.KUBECONFIG_DATA }}" | base64 -d > kubeconfig
+        echo "$KUBECONFIG_DATA" | base64 -d > kubeconfig
         export KUBECONFIG=$PWD/kubeconfig
         kubectl get nodes
 
