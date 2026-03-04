@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
       - name: tesis-app
-        image: sa-santiago-1.ocir.io/axdkgb7ur2sa/tesis-app:latest
+        image: scl.ocir.io/axdkgb7ur2sa/tesis-app:latest
         ports:
         - containerPort: 80
