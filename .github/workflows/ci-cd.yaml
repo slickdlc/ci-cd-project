@@ -27,13 +27,19 @@ jobs:
         echo "$OCIR_PASSWORD" | docker login $REGION.ocir.io \
         -u "$OCIR_USERNAME" --password-stdin
 
-    - name: Build Docker image
-      run: |
-        docker build -t $REGION.ocir.io/$NAMESPACE/$REPO_NAME:latest .
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2
 
-    - name: Push image to OCIR
-      run: |
-        docker push $REGION.ocir.io/$NAMESPACE/$REPO_NAME:latest
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Build and Push Docker image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: true
+        platforms: linux/arm64
+        tags: ${{ env.REGION }}.ocir.io/${{ env.NAMESPACE }}/${{ env.REPO_NAME }}:latest
 
     - name: Setup kubectl
       uses: azure/setup-kubectl@v3
