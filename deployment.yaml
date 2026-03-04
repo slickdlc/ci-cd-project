@@ -13,6 +13,8 @@ spec:
       labels:
         app: tesis-app
     spec:
+      imagePullSecrets:
+      - name: ocir-secret
       containers:
       - name: tesis-app
         image: scl.ocir.io/axdkgb7ur2sa/tesis-app:latest

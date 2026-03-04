@@ -46,6 +46,20 @@ jobs:
         export KUBECONFIG=$PWD/kubeconfig
         kubectl get nodes
 
+    - name: Create OCIR image pull secret
+      env:
+        OCIR_PASSWORD: ${{ secrets.OCIR_PASSWORD }}
+        OCIR_USERNAME: ${{ secrets.OCIR_USERNAME }}
+      run: |
+        export KUBECONFIG=$PWD/kubeconfig
+        kubectl create secret docker-registry ocir-secret \
+          --docker-server=$REGION.ocir.io \
+          --docker-username="$OCIR_USERNAME" \
+          --docker-password="$OCIR_PASSWORD" \
+          --docker-email="$OCIR_USERNAME" \
+          --namespace=tesis \
+          --dry-run=client -o yaml | kubectl apply -f -
+
     - name: Deploy to OKE
       run: |
         export KUBECONFIG=$PWD/kubeconfig
