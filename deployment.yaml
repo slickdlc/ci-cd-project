@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tesis-app
+  namespace: tesis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tesis-app
+  template:
+    metadata:
+      labels:
+        app: tesis-app
+    spec:
+      containers:
+      - name: tesis-app
+        image: sa-santiago-1.ocir.io/axdkgb7ur2sa/tesis-app:latest
+        ports:
+        - containerPort: 80
