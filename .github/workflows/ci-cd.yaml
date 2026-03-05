@@ -36,7 +36,8 @@ jobs:
     - name: Build and Push Docker image
       uses: docker/build-push-action@v4
       with:
-        context: .
+        context: ./app
+        file: ./app/Dockerfile
         push: true
         platforms: linux/arm64
         tags: ${{ env.REGION }}.ocir.io/${{ env.NAMESPACE }}/${{ env.REPO_NAME }}:latest
